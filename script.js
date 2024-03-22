@@ -8,8 +8,7 @@ const fs = require('fs');
 const problemURL = 'https://hackattic.com/challenges/mini_miner/problem?access_token=bca4271990f41bef';
 const sendingURL = 'https://hackattic.com/challenges/mini_miner/solve?access_token=bca4271990f41bef';
 
-    
-
+ 
     
 
 const mineBlock = (block, difficulty) => {
@@ -18,12 +17,20 @@ const mineBlock = (block, difficulty) => {
     hash = '';  
     while (true) {
         block['nonce'] = nonce;
-        b = JSON.stringify(block)
+        b = JSON.stringify(block);
+
+        //console.log(block);
         //console.log(nonce);
         let hash = crypto.createHash('sha256').update(b).digest('hex');
         //console.log(hash);
+        //let hash_bin = '';
+        
+        //console.log(hash_bin);
+        //console.log(hash);
         //console.log(hash);
         if (hash.startsWith(prefix)) {
+            console.log(b)
+            console.log(hash)
             return nonce;
         }
         nonce++;
@@ -34,13 +41,17 @@ const mineBlock = (block, difficulty) => {
 const data = helper.getTask(problemURL).then((data) => {
     const { block, difficulty, transactions } = data;
     //const prefix = '0'.repeat(difficulty);
-    const nonce = mineBlock(block, difficulty);
+    d = {"data" : block['data'] , 'nonce' : null}
     
-   
-    
-    return nonce;
-    }).then((solution) => {helper.sendTask(sendingURL, solution)})
+    const nonce = mineBlock(d, difficulty);
+
+    helper.sendTask(sendingURL, nonce).then((data) => {
+        console.log(data);})
         .catch((error) => {
             console.log(error);
-    });
+        });
+   
+    
+    
+    })
 
